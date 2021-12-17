@@ -1,0 +1,37 @@
+{
+  "type": "object",
+  "properties": {
+    "subject": {
+      "type": "string",
+      "title": "Subject"
+    },
+    "from": {
+      "type": "string",
+      "title": "From"
+    },
+    "to": {
+      "type": "number",
+      "title": "To"
+    },
+    "downloads": {
+      "type": "string",
+      "title": "Downloads"
+    },
+    "level": {
+      "type": "string",
+      "title": "Level"
+    },
+    "size": {
+      "type": "string",
+      "title": "Size"
+    },
+    "status": {
+      "type": "string",
+      "title": "Status"
+    },
+    "expires": {
+      "type": "string",
+      "title": "Expires"
+    }
+  }
+}

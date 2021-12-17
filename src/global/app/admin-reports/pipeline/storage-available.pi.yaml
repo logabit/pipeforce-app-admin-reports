@@ -1,0 +1,27 @@
+headers:
+  description: "Returns the available storage in GB"
+pipeline:
+
+  - iam.run.as:
+      username: systemuser
+
+  - cache.get:
+      key: "report:storage-available"
+      exit: true
+
+  - config.get:
+
+  - set.var:
+      key: "storageOverallInGb"
+      value: "#{@convert.toLong(body.system.value.storageInMb) / 1024 / 1024}"
+
+  - content.get:
+      uri: "$uri:pipeline:pipeline.start?key=global/app/admin-reports/pipeline/storage-used"
+
+  - set.body:
+      value: "#{vars.storageOverallInGb - body}"
+
+  - cache.put:
+      timeToLive: 30
+      key: "report:storage-available"
+      value: "#{body}"

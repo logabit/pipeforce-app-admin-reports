@@ -1,0 +1,25 @@
+headers:
+  description: "Returns the 25 biggest files stored in Drive."
+pipeline:
+
+  - iam.run.as:
+      username: systemuser
+
+  - sql.query:
+      datasource: "drive"
+      query: |
+        SELECT substring(storages.id from 7) AS owner,
+               fileid,
+               name,
+               to_timestamp(mtime) AS "lastmodified",
+               pg_size_pretty(SIZE) AS "humansize",
+               path
+        FROM filecache,
+             storages,
+             mimetypes
+        WHERE filecache.storage = storages.numeric_id
+          AND storages.id LIKE 'home::%'
+          AND filecache.mimetype = mimetypes.id
+          AND mimetypes.mimetype != 'httpd/unix-directory'
+        ORDER BY SIZE DESC
+        LIMIT 25

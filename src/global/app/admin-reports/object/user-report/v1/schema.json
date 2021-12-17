@@ -1,0 +1,22 @@
+{
+  "type": "object",
+  "properties": {
+    "user": {
+      "type": "string",
+      "title": "User"
+    },
+    "license": {
+      "type": "string",
+      "title": "License"
+    },
+    "quota": {
+      "title": "Quota"
+    },
+    "groups": {
+      "title": "Groups"
+    },
+    "storageInUse": {
+      "title": "Storage in use"
+    }
+  }
+}

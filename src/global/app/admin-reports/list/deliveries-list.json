@@ -1,0 +1,6 @@
+{
+  "title": "List all deliveries",
+  "description": "Lists all deliveries sent.",
+  "schema": "property.list?filter=global/app/admin-reports/object/delivery/v1/schema",
+  "input": "pipeline.start?key=global/app/admin-reports/pipeline/deliveries-list"
+}

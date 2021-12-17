@@ -1,0 +1,20 @@
+{
+        "folders": [
+           {
+               "path":"."
+           }
+        ],
+
+        "settings": {
+
+            "yaml.schemas": {
+               "https://hub-dev.pipeforce.org:443/api/v3/command/schema.pipeline": ["/*.pi.yaml"]
+            },
+
+           "files.exclude": {
+               "**/PIPEFORCE.code-workspace": true
+           },
+
+           "files.encoding": "utf8"
+        }
+}

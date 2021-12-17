@@ -1,0 +1,25 @@
+pipeline:
+
+  - iam.run.as:
+      username: "systemuser"
+
+  - cache.get:
+      key: "report:users-count"
+      exit: true
+
+  - iam.user.list:
+
+  - set.var:
+      key: "numberOfAllUsers"
+      value: "#{@list.size(body)}"
+
+  - set.var:
+      key: "numberOfEnabledUsers"
+      value: "#{@list.size(body.?[enabled == true])}"
+
+  - set.body:
+      value: "#{{vars.numberOfAllUsers, vars.numberOfEnabledUsers, vars.numberOfAllUsers - vars.numberOfEnabledUsers}}"
+
+  - cache.put:
+      timeToLive: 1
+      key: "report:users-count"

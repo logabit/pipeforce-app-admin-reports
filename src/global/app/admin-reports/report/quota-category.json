@@ -1,0 +1,25 @@
+{  
+  "title": "Quota Categories",
+  "description": "The users per quota category",
+  "type": "pie",
+  "data" : {
+    "labels": ["1 GB", "2 GB", "5 GB", "10 GB", "UNLIMITED"],
+    "datasets": [
+      {
+        "backgroundColor": [
+          "rgb(255,159,64)",
+          "rgb(75,192,192)",
+          "rgb(255,99,132)",
+          "rgb(255,205,86)",
+          "rgb(54,162,235)"
+        ],
+        "label":"Users",
+        "data": "$uri:pipeline:pipeline.start?key=global/app/admin-reports/pipeline/quota-category"
+      }
+    ]
+  },
+  "options": {
+      "responsive": true,
+      "aspectRatio": 2
+  }
+}

@@ -1,0 +1,19 @@
+pipeline:
+
+  - sql.query:
+      datasource: hub
+      query: |
+        SELECT
+            subject as "Subject",
+            owner_email as "From",
+            string_agg(recipient.email, ', ') AS "To",
+            sum(recipient.downloads_count) as "Downloads",
+            privacy_level + 1 as "Privacy Level",
+            pg_size_pretty(size) as "Size",
+            status as "Status",
+            to_timestamp(delete_after / 1000) as "Expires",
+            delivery.uuid as "Details"
+        FROM delivery
+        LEFT JOIN recipient on delivery.id = recipient.delivery_id
+        GROUP BY delivery.id
+        ORDER BY delivery.id

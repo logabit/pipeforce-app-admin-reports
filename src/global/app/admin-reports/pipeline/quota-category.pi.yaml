@@ -1,0 +1,41 @@
+pipeline:
+  - iam.user.list:
+
+  - script.run:
+      script: |
+        function command() {
+          var arr = []
+          var quota = []
+          var res = pi.message.body
+          for (i = 0; i < res.length; ++i) {
+            if (res[i]['attributes']) {
+              arr.push(res[i]['attributes'])
+            }
+          }
+          for (index = 0; index < arr.length; ++index) {
+            if (arr[index].drivequota) {
+              quota.push(arr[index].drivequota[0])
+            }
+          }
+          var counts = []
+          var arr1 = []
+          var reA = /[^a-zA-Z]/g;
+          var reN = /[^0-9]/g;
+          function sortAlphaNum(a, b) {
+            var aA = a.replace(reA, "");
+            var bA = b.replace(reA, "");
+            if (aA === bA) {
+              var aN = parseInt(a.replace(reN, ""), 10);
+              var bN = parseInt(b.replace(reN, ""), 10);
+              return aN === bN ? 0 : aN > bN ? 1 : -1;
+            } else {
+              return aA > bA ? 1 : -1;
+            }
+          }
+          quota = quota.sort(sortAlphaNum)
+          quota.forEach(function (x) { counts[x] = (counts[x] || 0) + 1; });
+          for (c in counts) {
+            arr1.push(counts[c])
+          }
+          return arr1
+        }

@@ -1,0 +1,25 @@
+vars: 
+   data: '#{{
+        {
+            user: "Bart Simpson",
+            license: "Professional",
+            quota: "5 GB",
+            groups: "Administrator",
+            storageInUse: "3.4 GB"
+        },
+        {
+            user: "Maggie Simpson",
+            license: "Professional",
+            quota: "2 GB",
+            groups: "Employee",
+            storageInUse: "1.7 GB"
+        }
+      }}'
+pipeline:       
+  - script.run:
+     script: |
+        function command() {
+        var arr = []
+          var res = pi.message.vars.data
+            return res
+        }

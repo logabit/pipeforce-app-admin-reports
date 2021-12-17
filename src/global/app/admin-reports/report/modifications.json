@@ -1,0 +1,51 @@
+{  
+  "title": "Files modifications per day",
+  "description": "Number of files modified per day for the last 30 days",
+  "type": "line",
+  "dateRange": true,
+  "data" : {
+    "labels": ["2021-12-01", "2021-12-02", "2021-12-03", "2021-12-04", "2021-12-05", "2021-12-06", "2021-12-07", "2021-12-08", "2021-12-09", "2021-12-10", "2021-12-11", "2021-12-12", "2021-12-13", "2021-12-14", "2021-12-15","2021-12-16", "2021-12-17", "2021-12-18", "2021-12-19", "2021-12-20", "2021-12-21", "2021-12-22", "2021-12-23", "2021-12-24", "2021-12-25", "2021-12-26", "2021-12-27", "2021-12-28", "2021-12-29", "2021-12-30"], 
+    "datasets": [
+      {
+        "label":"File Uploaded,Ilmi, Jerliu",
+        "data": [10, 4, 11, 12, 25, 13, 18, 21, 2, 20, 15, 14, 8, 17, 24, 10, 4, 11, 12, 25, 13, 18, 21, 2, 20, 15, 14, 8, 17, 24],
+        "borderColor": "rgb(255,99,132)",
+        "backgroundColor": "rgb(255,99,132)",
+        "tension": 0.1,
+        "fill": true,
+        "pointBorderColor" : "white"
+      },
+      {
+        "label":"File Created",
+        "data": [5, 21, 8, 19, 15, 3, 14, 16, 22, 25, 4, 7, 18, 12, 25, 7, 23, 10, 9, 3, 22, 27, 29, 0, 4, 11, 12, 25, 13, 18],
+        "borderColor": "rgb(255,205,86)",
+        "backgroundColor": "rgb(255,205,86)",
+        "tension": 0.1,
+        "fill": true,
+        "pointBorderColor" : "white"
+      },
+      {
+        "label":"File Modified",
+        "data": [7, 23, 10, 9, 3, 22, 27, 29, 0, 4, 11, 12, 25, 13, 18, 5, 21, 8, 19, 15, 3, 14, 16, 22, 25, 4, 7, 18, 12, 25],
+        "borderColor": "rgb(54,162,235)",
+        "backgroundColor": "rgb(54,162,235)",
+        "tension": 0.1,
+        "fill": true,
+        "pointBorderColor" : "white"
+      }
+    ]
+  },
+  "options": {
+    "responsive": true,
+    "plugins": {
+      "tooltip": {
+        "mode": "index"
+      }
+    },
+      "scales": {
+        "y": {
+          "stacked": true
+        }
+      }
+  }
+}

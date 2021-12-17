@@ -1,0 +1,7 @@
+{
+  "title": "25 Biggest Files",
+  "description": "Lists the 25 biggest files in Drive storage.",
+  "quicksearch": true,
+  "schema": "property.list?filter=global/app/admin-reports/object/file/v1/schema",
+  "input": "pipeline.start?key=global/app/admin-reports/pipeline/25-biggest-files"
+}

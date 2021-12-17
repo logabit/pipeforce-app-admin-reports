@@ -1,0 +1,46 @@
+{
+  "title": "Overall Storage",
+  "description": "The overall storage available and in use.",
+  "type": "bar",
+  "data": {
+    "labels": [
+      "Storage in GB"
+    ],
+    "datasets": [
+      {
+        "label": "Available",
+        "backgroundColor": [
+          "rgba(87, 214, 136, 0.87)"
+        ],
+        "data": [
+          "$uri:pipeline:pipeline.start?key=global/app/admin-reports/pipeline/storage-available"
+        ]
+      },
+      {
+        "label": "Used",
+        "backgroundColor": [
+          "rgba(148, 64, 124, 0.87)"
+        ],
+        "data": [
+          "$uri:pipeline:pipeline.start?key=global/app/admin-reports/pipeline/storage-used"
+        ]
+      }
+    ]
+  },
+  "options": {
+    "responsive": true,
+    "plugins": {
+      "legend": {
+        "position": "top"
+      }
+    },
+    "scales": {
+      "x": {
+        "stacked": true
+      },
+      "y": {
+        "stacked": true
+      }
+    }
+  }
+}

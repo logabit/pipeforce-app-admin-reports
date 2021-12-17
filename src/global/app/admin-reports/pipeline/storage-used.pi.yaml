@@ -1,0 +1,30 @@
+headers:
+  description: "Returns the storage in use in GB. Caches the last result for 10 min."
+pipeline:
+
+  - iam.run.as:
+      username: systemuser
+
+  - cache.get:
+      key: "report:storage-used"
+      exit: true
+
+  - sql.query:
+      datasource: "drive"
+      query: |
+        SELECT
+          sum(filecache.size) as "storage"
+        FROM
+          filecache, mimetypes
+        WHERE
+          filecache.mimetype = mimetypes.id
+        AND
+          mimetypes.mimetype != 'httpd/unix-directory';
+
+  - set.body:
+      value: "#{@convert.toDecimal(body[0].storage) / 1024 / 1024 / 1024}"
+
+  - cache.put:
+      timeToLive: 30
+      key: "report:storage-used"
+      value: "#{body}"

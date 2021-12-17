@@ -1,0 +1,31 @@
+{
+  "title": "Drive Storage by User",
+  "description": "The Drive storage in use by each user.",
+  "type": "bar",
+  "data": {
+    "labels": "$uri:pipeline:pipeline.start?key=global/app/admin-reports/pipeline/storage-usernames",
+    "datasets": [
+      {
+        "label": "Storage in MB",
+        "backgroundColor": [
+          "rgba(87, 214, 136, 0.87)"
+        ],
+        "data": "$uri:pipeline:pipeline.start?key=global/app/admin-reports/pipeline/storage-by-username"
+      }
+    ]
+  },
+  "options": {
+    "indexAxis": "y",
+    "elements": {
+      "bar": {
+        "borderWidth": 2
+      }
+    },
+    "responsive": true,
+    "plugins": {
+      "legend": {
+        "position": "right"
+      }
+    }
+  }
+}

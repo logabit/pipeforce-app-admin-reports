@@ -1,0 +1,34 @@
+pipeline:
+
+  - iam.run.as:
+      username: "systemuser"
+
+  - cache.get:
+      key: "report:storage-usernames"
+      exit: true
+
+  - sql.query:
+      datasource: "drive"
+      query: |
+        SELECT
+          substring(storages.id from 7) AS username
+        FROM
+          filecache, storages, mimetypes
+        WHERE
+          filecache.storage = storages.numeric_id
+          AND filecache.path NOT LIKE 'appdata_%'
+          AND filecache.mimetype = mimetypes.id
+          AND mimetypes.mimetype != 'httpd/unix-directory'
+           AND storages.id != 'local::/var/www/html/data/'
+        GROUP BY
+          storages.id
+        ORDER BY
+          storages.id
+
+  - set.body:
+      value: "#{body.![username]}"
+
+  - cache.put:
+      timeToLive: 30
+      key: "report:storage-usernames"
+      value: "#{body}"

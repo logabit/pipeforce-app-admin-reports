@@ -1,0 +1,7 @@
+{
+  "title": "List Users",
+  "description": "Lists all users with details.",
+  "quicksearch": true,
+  "schema": "property.list?filter=global/app/admin-reports/object/user/v1/schema",
+  "input": "iam.user.list"
+}

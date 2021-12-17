@@ -1,0 +1,5 @@
+pipeline:
+
+  - sql.query:
+      datasource: hub
+      query:"select count(*) from delivery where '10 Dec 2021' < to_char(to_timestamp(finalized_at / 1000)::timestamp, 'DD Mon YYYY') and '18 Dec 2021' > to_char(to_timestamp(finalized_at / 1000)::timestamp, 'DD Mon YYYY')"

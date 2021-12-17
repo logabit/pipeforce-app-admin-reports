@@ -1,0 +1,25 @@
+{
+  "type": "object",
+  "properties": {
+    "fileid": {
+      "type": "string",
+      "title": "File ID"
+    },
+    "humansize": {
+      "type": "string",
+      "title": "Size"
+    },
+    "owner": {
+      "type": "string",
+      "title": "Owner"
+    },
+    "name": {
+      "type": "string",
+      "title": "Name"
+    },
+    "lastmodified": {
+      "type": "string",
+      "title": "Last Modified"
+    }
+  }
+}

@@ -1,0 +1,67 @@
+headers:
+  description: "Generates sop users for all sop groups filtered by protectionClass and responsibilities structure"
+
+vars:
+  protectionClass: null # To be set by the caller as input args
+  usersFilter: "#{@util.toList('[]')}"
+pipeline:
+  - iam.user.list:
+  - set.var:
+      key: "users"
+      value: "#{body}"
+      output: "#{vars.users}"
+      
+  - iam.group.members:
+      name: "members"
+  - set.var:
+      key: "members"
+      value: "#{body}"
+      output: "#{vars.members}"
+      
+  - iam.group.list.names:
+      name: "lists"
+  - set.var:
+      key: "lists"
+      value: "#{body}"
+      output: "#{vars.lists}" 
+  
+  
+  - script.run:
+      script: |
+        function command() {
+          function fetchingUser(users) {
+            var userLists = [];
+            var quotas = [];
+            
+            var returnData = [];
+            
+            function getQuotas(devQuota) {
+              var quotaValue = 0;
+              if(devQuota) {
+                  quotaValue = devQuota.drivequota[0] || 0;
+              }
+              
+              
+              return quotaValue || 0;
+            }
+            
+            for (index = 0; index < users.length; ++index) {
+                userLists[index] = users[index]['username'];
+                quotas[index] = getQuotas(users[index]['attributes']);
+                returnData[index] = {
+                  user: users[index]['username'],
+                  quota: getQuotas(users[index]['attributes']) || "",
+                  groups: users[index]['groups'] || "",
+                  'storage-in-user': 0,
+                  '5-biggest-file': '0'
+                };
+            }
+            
+            return returnData;
+          }
+            
+            var res = JSON.stringify(fetchingUser(pi.message.vars["users"]));
+
+            pi.message.headers["Content-Type"] = 'application/json';
+            return res;
+        }

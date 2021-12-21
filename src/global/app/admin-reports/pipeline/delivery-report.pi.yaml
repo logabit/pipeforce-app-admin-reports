@@ -2,4 +2,27 @@ pipeline:
 
   - sql.query:
       datasource: hub
-      query:"select count(*) from delivery where '10 Dec 2021' < to_char(to_timestamp(finalized_at / 1000)::timestamp, 'DD Mon YYYY') and '18 Dec 2021' > to_char(to_timestamp(finalized_at / 1000)::timestamp, 'DD Mon YYYY')"
+      query: |
+        SELECT 
+        to_char(dates,'DD Mon YYYY') as date,
+        coalesce(count(d.finalized_at),0) as deliveries
+        FROM  generate_series('12/01/2021'::timestamp,'12/30/2021'::timestamp,'1 day'::interval) dates
+        left join
+        delivery d on dates=to_timestamp(d.finalized_at/1000)::date
+        GROUP BY to_timestamp(d.finalized_at/1000)::date,dates
+        order by dates asc
+
+  - script.run:
+      script: |
+        function command () {
+          var res = pi.message.body
+          var arr = []
+          var dateArr = []
+          var deliveriesArr = []
+          var obj = {}
+          for (i = 0; i < res.length; ++i) {
+            obj[res[i].date] = res[i].deliveries
+          }
+            arr.push(obj)
+          return arr[0]
+        }

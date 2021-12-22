@@ -5,18 +5,21 @@
       "type": "string",
       "title": "User"
     },
-    "license": {
-      "type": "string",
-      "title": "License"
-    },
     "quota": {
+      "type": "string",
       "title": "Quota"
     },
     "groups": {
+      "type": "string",
       "title": "Groups"
     },
-    "storageInUse": {
+    "storage-in-use": {
+      "type": "string",
       "title": "Storage in use"
+    },
+    "5-biggest-files": {
+      "type": "string",
+      "title": "5 Biggest file"
     }
   }
 }

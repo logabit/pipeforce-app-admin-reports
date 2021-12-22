@@ -23,8 +23,27 @@ pipeline:
   - set.var:
       key: "lists"
       value: "#{body}"
-      output: "#{vars.lists}" 
-  
+      output: "#{vars.lists}"
+      
+  - sql.query:
+      datasource: "drive"
+      query: |
+        SELECT substring(storages.id from 7) AS owner,
+               fileid,
+               name,
+               storage,
+               to_timestamp(mtime) AS "lastmodified",
+               pg_size_pretty(SIZE) AS "humansize",
+               path
+        FROM filecache,
+             storages,
+             mimetypes
+        WHERE filecache.storage = storages.numeric_id
+          AND storages.id LIKE 'home::%'
+          AND filecache.mimetype = mimetypes.id
+          AND mimetypes.mimetype != 'httpd/unix-directory'
+        ORDER BY SIZE DESC
+        LIMIT 25
   
   - script.run:
       script: |
@@ -32,8 +51,17 @@ pipeline:
           function fetchingUser(users) {
             var userLists = [];
             var quotas = [];
-            
             var returnData = [];
+            var driveData = [];
+            
+            for (di = 0; di < pi.message.body.length; ++di) {
+              driveData[di] = {
+                owner: pi.message.body[di].owner,
+                size: pi.message.body[di].humansize,
+                storage: pi.message.body[di].storage
+              };
+            }
+            
             
             function getQuotas(devQuota) {
               var quotaValue = 0;
@@ -41,27 +69,45 @@ pipeline:
                   quotaValue = devQuota.drivequota[0] || 0;
               }
               
-              
               return quotaValue || 0;
+            }
+            
+            
+            function calcStorageUsage(storageArr) {
+              var sum = 0;
+
+              for(si = 0; si < storageArr.length; ++si) {
+                sum += parseFloat(storageArr[si]);
+              }
+              
+              return Math.ceil(sum / 1024 / 1024 );
             }
             
             for (index = 0; index < users.length; ++index) {
                 userLists[index] = users[index]['username'];
                 quotas[index] = getQuotas(users[index]['attributes']);
+                
+                var biggestFileArr = [];
+                var storageData = [];
+                driveData.forEach(function(driveItem) {
+                  if(driveItem.owner === users[index]['username']) {
+                    biggestFileArr.push(driveItem.size)
+                    storageData.push(driveItem.storage)
+                  }
+                });
+                
                 returnData[index] = {
-                  user: users[index]['username'],
-                  quota: getQuotas(users[index]['attributes']) || "",
-                  groups: users[index]['groups'] || "",
-                  'storage-in-user': 0,
-                  '5-biggest-file': '0'
+                  "user": users[index]['username'],
+                  "quota": getQuotas(users[index]['attributes']) || "",
+                  "storage-in-use": calcStorageUsage(storageData) + " GB",
+                  "5-biggest-files": biggestFileArr.join(','),
                 };
             }
+            
             
             return returnData;
           }
             
             var res = JSON.stringify(fetchingUser(pi.message.vars["users"]));
-
-            pi.message.headers["Content-Type"] = 'application/json';
             return res;
         }

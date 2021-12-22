@@ -49,6 +49,7 @@ pipeline:
       script: |
         function command() {
           function fetchingUser(users) {
+          var arr = []
             var userLists = [];
             var quotas = [];
             var returnData = [];
@@ -97,17 +98,19 @@ pipeline:
                 });
                 
                 returnData[index] = {
-                  "user": users[index]['username'],
-                  "quota": getQuotas(users[index]['attributes']) || "",
-                  "storage-in-use": calcStorageUsage(storageData) + " GB",
-                  "5-biggest-files": biggestFileArr.join(','),
+                  user: users[index]['username'],
+                  quota: getQuotas(users[index]['attributes']) || "",
+                  groups: users[index]['groups'] || "",
+                  'storage-in-use': calcStorageUsage(storageData) + " GB",
+                  '5-biggest-files': biggestFileArr.join(','),
                 };
+            arr.push(returnData)
             }
-            
-            
-            return returnData;
+            return arr[0];
           }
-            
-            var res = JSON.stringify(fetchingUser(pi.message.vars["users"]));
+          var res = []
+            res = JSON.stringify(fetchingUser(pi.message.vars["users"]));
             return res;
         }
+  - set.body:
+      value: "#{@json.load(body)}"

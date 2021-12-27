@@ -1,0 +1,15 @@
+{
+  "type": "object",
+  "properties": {
+    "labels": {
+      "type": "array",
+      "title": "labels",
+      "description": "The array of labels."
+    },
+    "datasets": {
+      "type": "array",
+      "title": "datasets",
+      "description": "The array of data."
+    }
+  }
+}

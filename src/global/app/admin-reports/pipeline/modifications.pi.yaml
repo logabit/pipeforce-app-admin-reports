@@ -1,0 +1,114 @@
+headers:
+  description: "Returns the 25 biggest files stored in Drive."
+pipeline:
+
+  - sql.query:
+      datasource: "drive"
+      query: |
+        SELECT to_timestamp(mtime) AS "modified",
+               to_timestamp(storage_mtime) AS "stored"
+        FROM filecache,
+             storages,
+             mimetypes
+        WHERE filecache.storage = storages.numeric_id
+          AND storages.id LIKE 'home::%'
+          AND filecache.mimetype = mimetypes.id
+          AND mimetypes.mimetype != 'httpd/unix-directory'
+        ORDER BY SIZE DESC
+  - script.run:
+      script: |
+        function command() {
+          function getLabels() {
+            var labels = [];
+            var today = new Date();
+            
+            for(i = 1; i < 30; ++i) {
+              var year = today.getFullYear();
+              var date = today.getDate();
+              var month = today.getMonth() + 1;
+              
+              labels[i-1] = year + "-" + month + "-" + date;
+              today = new Date(new Date().setDate(new Date().getDate()-i));
+            }
+            
+            return labels;
+          }
+          
+          
+          function getData() {
+            var fileUploaded = [];
+            var fileCreated = [];
+            var fileModified = [];
+            var fileData = [];
+            
+            for (fi = 0; fi < pi.message.body.length; ++fi) {
+              var modified = pi.message.body[fi].modified;
+              var stored = pi.message.body[fi].stored;
+              
+              var modifiedYear = new Date(modified).getFullYear();
+              var modifiedDate = new Date(modified).getDate();
+              var modifiedMonth = new Date(modified).getMonth() + 1;
+              
+              var storedYear = new Date(stored).getFullYear();
+              var storedDate = new Date(stored).getDate();
+              var storedMonth = new Date(stored).getMonth() + 1;
+              
+              fileData[fi] = {
+                modified: modifiedYear + "-" + modifiedMonth + "-" + modifiedDate,
+                stored: storedYear + "-" + storedMonth + "-" + storedDate
+              }
+            }
+            
+            var labels = getLabels();
+            for(li = 0; li < labels.length; ++li) {
+              fileUploaded[li] = fileData.filter(function(item) {
+                return item.stored === labels[li];
+              }).length;
+              
+              fileCreated[li] = fileData.filter(function(item) {
+                return item.modified === labels[li] && !item.stored;
+              }).length;
+              
+              fileModified[li] = fileData.filter(function(item){ return item.modified === labels[li] && item.stored; }).length;
+            }
+            
+            return [
+              {
+                "label":"File Uploaded",
+                "data": fileUploaded,
+                "borderColor": "rgb(255,99,132)",
+                "backgroundColor": "rgb(255,99,132)",
+                "tension": 0.1,
+                "fill": true,
+                "pointBorderColor" : "white"
+              },
+              {
+                "label":"File Created",
+                "data": fileCreated,
+                "borderColor": "rgb(255,205,86)",
+                "backgroundColor": "rgb(255,205,86)",
+                "tension": 0.1,
+                "fill": true,
+                "pointBorderColor" : "white"
+              },
+              {
+                "label":"File Modified",
+                "data": fileModified,
+                "borderColor": "rgb(54,162,235)",
+                "backgroundColor": "rgb(54,162,235)",
+                "tension": 0.1,
+                "fill": true,
+                "pointBorderColor" : "white"
+              }
+            ]
+          }
+          
+          var res = {
+            labels: getLabels(),
+            datasets: getData()
+          };
+          
+          return JSON.stringify(res);
+        }
+  - set.body:
+      value: "#{@json.load(body)}"

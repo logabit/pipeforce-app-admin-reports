@@ -90,19 +90,22 @@ pipeline:
                 
                 var biggestFileArr = [];
                 var storageData = [];
+                count = 0;
                 driveData.forEach(function(driveItem) {
                   if(driveItem.owner === users[index]['username']) {
-                    biggestFileArr.push(driveItem.size)
-                    storageData.push(driveItem.storage)
+                  if (count < 5){biggestFileArr.push(driveItem.size)}
+                  count++;
+                  storageData.push(driveItem.storage)
                   }
                 });
+                
                 
                 returnData[index] = {
                   user: users[index]['username'],
                   quota: getQuotas(users[index]['attributes']) || "",
                   groups: users[index]['groups'] || "",
-                  'storage-in-use': calcStorageUsage(storageData) + " GB",
-                  '5-biggest-files': biggestFileArr.join(','),
+                  'storageInUse': calcStorageUsage(storageData) + " GB",
+                  'fiveBiggestFiles': biggestFileArr.join(', '),
                 };
             arr.push(returnData)
             }

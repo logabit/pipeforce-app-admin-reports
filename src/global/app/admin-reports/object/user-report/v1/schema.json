@@ -13,11 +13,11 @@
       "type": "string",
       "title": "Groups"
     },
-    "storage-in-use": {
+    "storageInUse": {
       "type": "string",
       "title": "Storage in use"
     },
-    "5-biggest-files": {
+    "fiveBiggestFiles": {
       "type": "string",
       "title": "5 Biggest file"
     }

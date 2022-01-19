@@ -1,6 +1,6 @@
 {  
   "title": "Quota Categories",
-  "description": "The users per quota category",
+  "description": "Lists quota categories and number of users assigned",
   "type": "pie",
   "data" : {
     "labels": ["1 GB", "2 GB", "5 GB", "10 GB", "UNLIMITED"],

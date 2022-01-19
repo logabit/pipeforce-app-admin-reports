@@ -18,6 +18,11 @@ pipeline:
             }
           }
           var counts = []
+          counts["1 GB"] = 0
+          counts["2 GB"] = 0
+          counts["5 GB"] = 0
+          counts["10 GB"] = 0
+          counts["UNLIMITED"] = 0
           var arr1 = []
           var reA = /[^a-zA-Z]/g;
           var reN = /[^0-9]/g;
@@ -33,7 +38,7 @@ pipeline:
             }
           }
           quota = quota.sort(sortAlphaNum)
-          quota.forEach(function (x) { counts[x] = (counts[x] || 0) + 1; });
+          quota.forEach(function (x) { counts[x] =  counts[x] + 1 });
           for (c in counts) {
             arr1.push(counts[c])
           }

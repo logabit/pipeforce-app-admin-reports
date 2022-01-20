@@ -4,7 +4,6 @@
   "type": "line",
   "dateRange": true,
   "data" : {
-    "labels": ["01 Dec 2021", "02 Dec 2021", "03 Dec 2021", "04 Dec 2021", "05 Dec 2021", "06 Dec 2021", "07 Dec 2021", "08 Dec 2021", "09 Dec 2021", "10 Dec 2021", "11 Dec 2021", "12 Dec 2021", "13 Dec 2021", "14 Dec 2021", "15 Dec 2021","16 Dec 2021", "17 Dec 2021", "18 Dec 2021", "19 Dec 2021", "20 Dec 2021", "21 Dec 2021", "22 Dec 2021", "23 Dec 2021", "24 Dec 2021", "25 Dec 2021", "26 Dec 2021", "27 Dec 2021", "28 Dec 2021", "29 Dec 2021", "30 Dec 2021"],
     "datasets": [
       {
         "label":"Deliveries",

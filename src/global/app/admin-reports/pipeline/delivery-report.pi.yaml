@@ -6,7 +6,7 @@ pipeline:
         SELECT 
         to_char(dates,'DD Mon YYYY') as date,
         coalesce(count(d.finalized_at),0) as deliveries
-        FROM  generate_series('12/01/2021'::timestamp,'12/30/2021'::timestamp,'1 day'::interval) dates
+        FROM  generate_series(CAST(CURRENT_DATE - 30 AS varchar)::timestamp,CAST(CURRENT_DATE AS varchar)::timestamp,'1 day'::interval) dates
         left join
         delivery d on dates=to_timestamp(d.finalized_at/1000)::date
         GROUP BY to_timestamp(d.finalized_at/1000)::date,dates

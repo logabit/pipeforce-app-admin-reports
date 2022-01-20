@@ -38,7 +38,12 @@ pipeline:
             }
           }
           quota = quota.sort(sortAlphaNum)
-          quota.forEach(function (x) { counts[x] =  counts[x] + 1 });
+          total_quota_users = 0
+          quota.forEach(function (x) { 
+            counts[x] =  counts[x] + 1 
+            total_quota_users++
+          });
+          counts["UNLIMITED"] = res.length - total_quota_users + counts["UNLIMITED"] 
           for (c in counts) {
             arr1.push(counts[c])
           }

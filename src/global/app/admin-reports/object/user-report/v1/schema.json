@@ -10,7 +10,7 @@
       "title": "Quota"
     },
     "groups": {
-      "type": "string",
+      "type": "array",
       "title": "Groups"
     },
     "storageInUse": {

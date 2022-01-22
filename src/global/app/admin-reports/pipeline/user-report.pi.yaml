@@ -6,6 +6,7 @@ vars:
   usersFilter: "#{@util.toList('[]')}"
 pipeline:
   - iam.user.list:
+      includeGroups: true
   - set.var:
       key: "users"
       value: "#{body}"
@@ -90,6 +91,7 @@ pipeline:
                 
                 var biggestFileArr = [];
                 var storageData = [];
+                var groups = [];
                 count = 0;
                 driveData.forEach(function(driveItem) {
                   if(driveItem.owner === users[index]['username']) {
@@ -98,16 +100,25 @@ pipeline:
                   storageData.push(driveItem.storage)
                   }
                 });
-                
+              
+                function getGroups(userGroups) {
+                  if (userGroups){
+                    userGroups.forEach(function(group) {
+                      groups.push(group)
+                    });
+                  }
+                  return groups;
+                }
+
                 
                 returnData[index] = {
-                  user: users[index]['username'],
-                  quota: getQuotas(users[index]['attributes']) || "",
-                  groups: users[index]['groups'] || "",
-                  'storageInUse': calcStorageUsage(storageData) + " GB",
-                  'fiveBiggestFiles': biggestFileArr.join(', '),
+                  "user": users[index]['username'],
+                  "quota": getQuotas(users[index]['attributes']) || "",
+                  "groups": getGroups(users[index]['groups']).join(', ') || "",
+                  "storageInUse": calcStorageUsage(storageData) + " GB",
+                  "fiveBiggestFiles": biggestFileArr.join(', '),
                 };
-            arr.push(returnData)
+              arr.push(returnData)
             }
             return arr[0];
           }

@@ -6,15 +6,17 @@ pipeline:
       datasource: "drive"
       query: |
         SELECT to_timestamp(mtime) AS "modified",
-               to_timestamp(storage_mtime) AS "stored"
-        FROM filecache,
+               to_timestamp(storage_mtime) AS "stored",
+               to_timestamp(upload_time) AS "uploaded"
+        FROM filecache f FULL OUTER JOIN filecache_extended fe
+        on f.fileid = fe.fileid,
              storages,
              mimetypes
-        WHERE filecache.storage = storages.numeric_id
+        WHERE f.storage = storages.numeric_id
           AND storages.id LIKE 'home::%'
-          AND filecache.mimetype = mimetypes.id
+          AND f.mimetype = mimetypes.id
           AND mimetypes.mimetype != 'httpd/unix-directory'
-        ORDER BY SIZE DESC
+        ORDER BY modified DESC
   - script.run:
       script: |
         function command() {
@@ -69,6 +71,7 @@ pipeline:
             for (fi = 0; fi < pi.message.body.length; ++fi) {
               var modified = pi.message.body[fi].modified;
               var stored = pi.message.body[fi].stored;
+              var uploaded = pi.message.body[fi].uploaded;
               
               var modifiedYear = new Date(modified).getFullYear();
               var modifiedDate = new Date(modified).getDate();
@@ -77,24 +80,44 @@ pipeline:
               var storedYear = new Date(stored).getFullYear();
               var storedDate = new Date(stored).getDate();
               var storedMonth = new Date(stored).getMonth() + 1;
+
+              var uploadedYear = new Date(uploaded).getFullYear();
+              var uploadedDate = new Date(uploaded).getDate();
+              var uploadedMonth = new Date(uploaded).getMonth() + 1;          
               
               fileData[fi] = {
                 modified: modifiedYear + "-" + modifiedMonth + "-" + modifiedDate,
-                stored: storedYear + "-" + storedMonth + "-" + storedDate
+                stored: storedYear + "-" + storedMonth + "-" + storedDate,
+                uploaded: uploadedYear + "-" + uploadedMonth + "-" + uploadedDate
+              }
+
+              if (!uploaded){
+                fileData[fi] = {
+                  modified: modifiedYear + "-" + modifiedMonth + "-" + modifiedDate,
+                  stored: storedYear + "-" + storedMonth + "-" + storedDate,
+                  uploaded: null
+               }
               }
             }
             
             var labels = getLabels();
             for(li = 0; li < labels.length; ++li) {
+
               fileUploaded[li] = fileData.filter(function(item) {
-                return item.stored === labels[li];
+                var storedYear = new Date(item.stored).getFullYear();
+                var uploadedYear = new Date(item.uploaded).getFullYear();
+                return item.uploaded === labels[li] && item.uploaded && storedYear != uploadedYear;
               }).length;
               
               fileCreated[li] = fileData.filter(function(item) {
-                return item.modified === labels[li] && !item.stored;
+                var storedYear = new Date(item.stored).getFullYear();
+                var uploadedYear = new Date(item.uploaded).getFullYear();
+                return item.uploaded === labels[li] && item.uploaded && storedYear == uploadedYear;
               }).length;
               
-              fileModified[li] = fileData.filter(function(item){ return item.modified === labels[li] && item.stored; }).length;
+              fileModified[li] = fileData.filter(function(item){ 
+              return item.modified === labels[li] && !item.uploaded; 
+              }).length;
             }
             
             return [

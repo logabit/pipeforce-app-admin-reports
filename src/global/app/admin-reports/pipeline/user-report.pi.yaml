@@ -71,6 +71,9 @@ pipeline:
                   quotaValue = devQuota.drivequota[0] || 0;
               }
               
+              if (quotaValue == ''){
+                quotaValue = 'UNLIMITED'
+              }
               return quotaValue || 0;
             }
             

@@ -85,7 +85,7 @@ pipeline:
                 sum += parseFloat(storageArr[si]);
               }
               
-              return Math.ceil(sum / 1024 / 1024 );
+              return sum;
             }
             
             for (index = 0; index < users.length; ++index) {
@@ -116,9 +116,11 @@ pipeline:
                 
                 returnData[index] = {
                   "user": users[index]['username'],
+                  "firstName": users[index]['firstName'],
+                  "lastName": users[index]['lastName'],
                   "quota": getQuotas(users[index]['attributes']) || "",
                   "groups": getGroups(users[index]['groups']).join(', ') || "",
-                  "storageInUse": calcStorageUsage(storageData) + " GB",
+                  "storageInUse": calcStorageUsage(storageData) + " KB",
                   "fiveBiggestFiles": biggestFileArr.join(', '),
                 };
               arr.push(returnData)

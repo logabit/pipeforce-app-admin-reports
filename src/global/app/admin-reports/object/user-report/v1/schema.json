@@ -5,6 +5,14 @@
       "type": "string",
       "title": "User"
     },
+    "firstName": {
+      "type": "string",
+      "title": "First Name"
+    },
+    "lastName": {
+      "type": "string",
+      "title": "Last Name"
+    },
     "quota": {
       "type": "string",
       "title": "Quota"
@@ -19,7 +27,7 @@
     },
     "fiveBiggestFiles": {
       "type": "string",
-      "title": "5 Biggest file"
+      "title": "5 biggest files"
     }
   }
 }

@@ -1,6 +1,0 @@
-{
-  "title": "modifications",
-  "description": "",
-  "schema": "property.list?filter=global/app/admin-reports/object/modifications/v1/schema",
-  "input": "pipeline.start?key=global/app/admin-reports/pipeline/modifications"
-}

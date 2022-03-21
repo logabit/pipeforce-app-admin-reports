@@ -1,6 +1,6 @@
 {
-  "title": "List all users",
-  "description": "Lists all users + details",
+  "title": "List all users report",
+  "description": "List all users report",
   "schema": "property.list?filter=global/app/admin-reports/object/user-report/v1/schema",
   "input": "pipeline.start?key=global/app/admin-reports/pipeline/user-report"
 }

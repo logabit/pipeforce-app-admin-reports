@@ -50,91 +50,86 @@ pipeline:
       script: |
         function command() {
           function fetchingUser(users) {
-            var arr = []
-              var userLists = [];
-              var quotas = [];
-              var returnData = [];
-              var driveData = [];
-
-              for (di = 0; di < pi.message.body.length; ++di) {
-                driveData[di] = {
-                  owner: pi.message.body[di].owner,
-                  size: pi.message.body[di].humansize,
-                  storage: pi.message.body[di].storage
-                };
+          var arr = []
+            var userLists = [];
+            var quotas = [];
+            var returnData = [];
+            var driveData = [];
+            
+            for (di = 0; di < pi.message.body.length; ++di) {
+              driveData[di] = {
+                owner: pi.message.body[di].owner,
+                size: pi.message.body[di].humansize,
+                storage: pi.message.body[di].storage
+              };
+            }
+            
+            
+            function getQuotas(devQuota) {
+              var quotaValue = 0;
+              if(devQuota) {
+                  quotaValue = devQuota.drivequota[0] || 0;
               }
-
-              function getQuotas(devQuota) {
-                var quotaValue = 0;
-                if(devQuota) {
-                    quotaValue = devQuota.drivequota[0] || 0;
-                }
-
-                if (quotaValue == ''){
-                  quotaValue = 'UNLIMITED'
-                }
-                return quotaValue || 0;
+              
+              if (quotaValue == ''){
+                quotaValue = 'UNLIMITED'
               }
+              return quotaValue || 0;
+            }
+            
+            
+            function calcStorageUsage(storageArr) {
+              var sum = 0;
 
-
-              function calcStorageUsage(storageArr) {
-                var sum = 0;
-
-                for(si = 0; si < storageArr.length; ++si) {
-                  sum += parseFloat(storageArr[si]);
-                }
-
-                return sum;
+              for(si = 0; si < storageArr.length; ++si) {
+                sum += parseFloat(storageArr[si]);
               }
-
-              for (index = 0; index < users.length; ++index) {
-                  userLists[index] = users[index]['username'];
-                  quotas[index] = getQuotas(users[index]['attributes']);
-
-                  var biggestFileArr = [];
-                  var storageData = [];
-                  var groups = [];
-                  count = 0;
-                  driveData.forEach(function(driveItem) {
-                    if(driveItem.owner === users[index]['username']) {
-                    if (count < 5){biggestFileArr.push(driveItem.size)}
-                    count++;
-                    storageData.push(driveItem.storage)
-                    }
-                  });
-
-                  function getGroups(userGroups) {
-                    if (userGroups){
-                      userGroups.forEach(function(group) {
-                        groups.push(group)
-                      });
-                    }
-                    return groups;
+              
+              return sum;
+            }
+            
+            for (index = 0; index < users.length; ++index) {
+                userLists[index] = users[index]['username'];
+                quotas[index] = getQuotas(users[index]['attributes']);
+                
+                var biggestFileArr = [];
+                var storageData = [];
+                var groups = [];
+                count = 0;
+                driveData.forEach(function(driveItem) {
+                  if(driveItem.owner === users[index]['username']) {
+                  if (count < 5){biggestFileArr.push(driveItem.size)}
+                  count++;
+                  storageData.push(driveItem.storage)
                   }
+                });
+              
+                function getGroups(userGroups) {
+                  if (userGroups){
+                    userGroups.forEach(function(group) {
+                      groups.push(group)
+                    });
+                  }
+                  return groups;
+                }
 
-                  var newDate = new Date();
-                  newDate.setTime(users[index]['createdTimestamp']);
-                  createdDate = newDate.toISOString();
-
-                  returnData[index] = {
-                    "user": users[index]['username'],
-                    "firstName": users[index]['firstName'],
-                    "lastName": users[index]['lastName'],
-                    "email": users[index]['email'],
-                    "created": createdDate || "",
-                    "quota": getQuotas(users[index]['attributes']) || "",
-                    "groups": getGroups(users[index]['groups']).join(', ') || "",
-                    "storageInUse": calcStorageUsage(storageData) + " KB",
-                    "fiveBiggestFiles": biggestFileArr.join(', '),
-                  };
-                arr.push(returnData)
-              }
-              return arr[0];
+                
+                returnData[index] = {
+                  "user": users[index]['username'],
+                  "firstName": users[index]['firstName'],
+                  "lastName": users[index]['lastName'],
+                  "quota": getQuotas(users[index]['attributes']) || "",
+                  "groups": getGroups(users[index]['groups']).join(', ') || "",
+                  "storageInUse": calcStorageUsage(storageData) + " KB",
+                  "fiveBiggestFiles": biggestFileArr.join(', '),
+                };
+              arr.push(returnData)
+            }
+            return arr[0];
           }
-
           var res = []
-          res = JSON.stringify(fetchingUser(pi.message.vars["users"]));
-          return res;
+            res = JSON.stringify(fetchingUser(pi.message.vars["users"]));
+            return res;
         }
   - set.body:
       value: "#{@json.load(body)}"

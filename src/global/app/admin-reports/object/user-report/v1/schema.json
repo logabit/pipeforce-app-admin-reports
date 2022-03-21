@@ -13,6 +13,14 @@
       "type": "string",
       "title": "Last Name"
     },
+    "email": {
+      "type": "string",
+      "title": "Email"
+    },
+    "created": {
+      "type": "string",
+      "title": "Created"
+    },
     "quota": {
       "type": "string",
       "title": "Quota"
